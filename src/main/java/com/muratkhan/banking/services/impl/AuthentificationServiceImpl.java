@@ -64,7 +64,7 @@ public class AuthentificationServiceImpl implements AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getLogin(),
                 signInRequest.getPassword()));
 
-        var user = userRepository.findByEmail(signInRequest.getLogin());
+        var user = userRepository.findByLogin(signInRequest.getLogin());
 
         var jwt = jwtService.generateToken(user);
 
@@ -78,8 +78,8 @@ public class AuthentificationServiceImpl implements AuthenticationService {
     }
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
-        String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
-        User user = userRepository.findByEmail(userEmail);
+        String userLogin = jwtService.extractUserName(refreshTokenRequest.getToken());
+        User user = userRepository.findByLogin(userLogin);
         if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
             var jwt = jwtService.generateToken(user);
 

@@ -47,4 +47,28 @@ public class UserServiceImpl implements UserService {
         user.setPhone(newPhone);
         userRepository.save(user);
     }
+
+    public void updateContactInfo(Long userId, String email, String phone) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        boolean isEmailEmpty = email == null || email.trim().isEmpty();
+        boolean isPhoneEmpty = phone == null || phone.trim().isEmpty();
+
+        if (isEmailEmpty && isPhoneEmpty) {
+            throw new IllegalArgumentException("Cannot remove both email and phone. At least one contact method is required.");
+        }
+
+        if (!isEmailEmpty || !isPhoneEmpty) {
+            if (!isEmailEmpty) {
+                user.setEmail(email);
+            }
+            if (!isPhoneEmpty) {
+                user.setPhone(phone);
+            }
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("At least one contact method (email or phone) must be provided.");
+        }
+    }
 }
